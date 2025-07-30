@@ -1,0 +1,8 @@
+{
+    "puppeteerVersion": "24.10.2",
+    "platform": "mac_arm",
+    "revision": "1494115",
+    "cacheDir": "/Users/ironin/Work/kilocode-main/browser-automation-cli/.browser-automation/puppeteer",
+    "snapshotsDir": "/Users/ironin/Work/kilocode-main/browser-automation-cli/.browser-automation/puppeteer/.chromium-browser-snapshots",
+    "executablePath": "/Users/ironin/.chromium-browser-snapshots/chromium/mac_arm-1494115/chrome-mac/Chromium.app/Contents/MacOS/Chromium"
+}
