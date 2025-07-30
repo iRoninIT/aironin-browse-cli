@@ -4,6 +4,8 @@ A command-line tool for browser automation with **headed Chrome support** - perf
 
 ## 🎯 Why This Tool?
 
+- **AI Agent Optimized**: Screenshot analysis and visual feedback for AI decision-making
+- **Remote Browser Detection**: Automatically finds and uses remote browsers when available
 - **Headed Mode**: Unlike headless automation, you can see the browser in action
 - **Real-time Visibility**: Watch AI agents interact with web pages
 - **Better Debugging**: Screenshots and console logs help debug issues
@@ -64,7 +66,7 @@ aironin-browse close
 ```bash
 -v, --viewport <size>    Browser viewport size (e.g., 900x600)
 -q, --quality <number>    Screenshot quality (1-100)
--r, --remote             Enable remote browser connection
+-r, --remote             Force remote browser connection (default: auto-detect)
 -h, --host <url>         Remote browser host URL
 ```
 
@@ -81,7 +83,7 @@ aironin-browse test
 # Test with custom URL
 aironin-browse test --url https://google.com
 
-# Test with remote browser
+# Test with remote browser (auto-detection enabled by default)
 aironin-browse test --remote --host http://localhost:9222
 ```
 
@@ -185,15 +187,17 @@ To connect to an existing Chrome instance:
    chrome --remote-debugging-port=9222
    ```
 
-2. Set environment variables:
+2. The tool will automatically detect and connect to remote browsers:
+
+   ```bash
+   aironin-browse launch https://example.com
+   ```
+
+3. Or force remote connection:
 
    ```bash
    export REMOTE_BROWSER_ENABLED=true
    export REMOTE_BROWSER_HOST=http://localhost:9222
-   ```
-
-3. Use the tool:
-   ```bash
    aironin-browse launch https://example.com
    ```
 

@@ -3,9 +3,28 @@
 import { Command } from "commander"
 import chalk from "chalk"
 import { BrowserSession, type BrowserActionResult } from "./browser/BrowserSession.js"
+import { discoverChromeHostUrl } from "./browser/browserDiscovery.js"
 import { createInterface } from "node:readline"
 
 const program = new Command()
+
+// Helper function to detect and configure remote browser
+async function detectRemoteBrowser(forceRemote: boolean = false): Promise<void> {
+  // Try remote browser detection first (unless explicitly disabled)
+  if (forceRemote || process.env.REMOTE_BROWSER_ENABLED !== "false") {
+    console.log(chalk.blue("🔍 Attempting remote browser detection..."))
+    const remoteHostUrl = await discoverChromeHostUrl(9222)
+    
+    if (remoteHostUrl) {
+      console.log(chalk.green(`✅ Found remote browser at: ${remoteHostUrl}`))
+      process.env.REMOTE_BROWSER_ENABLED = "true"
+      process.env.REMOTE_BROWSER_HOST = remoteHostUrl
+    } else {
+      console.log(chalk.yellow("❌ No remote browser found, using local browser"))
+      process.env.REMOTE_BROWSER_ENABLED = "false"
+    }
+  }
+}
 
 program
   .name("aironin-browse")
@@ -31,11 +50,10 @@ program
       // Set environment variables from options
       process.env.BROWSER_VIEWPORT_SIZE = options.viewport || "900x600"
       process.env.SCREENSHOT_QUALITY = (options.quality || 75).toString()
-      process.env.REMOTE_BROWSER_ENABLED = options.remote ? "true" : "false"
-      if (options.host) {
-        process.env.REMOTE_BROWSER_HOST = options.host
-      }
-
+      
+      // Detect remote browser (unless explicitly disabled)
+      await detectRemoteBrowser(options.remote)
+      
       const browser = new BrowserSession()
       
       // Test 1: Launch browser
@@ -113,11 +131,10 @@ program
       // Set environment variables from options with defaults
       process.env.BROWSER_VIEWPORT_SIZE = options.viewport || "900x600"
       process.env.SCREENSHOT_QUALITY = (options.quality || 75).toString()
-      process.env.REMOTE_BROWSER_ENABLED = options.remote ? "true" : "false"
-      if (options.host) {
-        process.env.REMOTE_BROWSER_HOST = options.host
-      }
-
+      
+      // Detect remote browser (unless explicitly disabled)
+      await detectRemoteBrowser(options.remote)
+      
       const browser = new BrowserSession()
       await browser.launchBrowser()
       const result = await browser.navigateToUrl(url)
